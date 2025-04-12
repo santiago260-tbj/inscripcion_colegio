@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Registro Escolar</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #ddd;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .students-list {
+            margin-top: 2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .actions button {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-radius: 0;
+                margin-right: 0;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3079/3079165.png" alt="Logo Escuela">
+            <h1>Colegio San Miguel</h1>
+        </div>
+        <p>Sistema de Registro de Estudiantes</p>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'register')">Registro</div>
+            <div class="tab" onclick="openTab(event, 'students')">Estudiantes</div>
+            <div class="tab" onclick="openTab(event, 'reports')">Reportes</div>
+        </div>
+        
+        <!-- Pestaña de Registro -->
+        <div id="register" class="tab-content active">
+            <h2>Registro de Nuevo Estudiante</h2>
+            <form id="studentForm">
+                <div class="form-group">
+                    <label for="firstName">Nombres:</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Apellidos:</label>
+                    <input type="text" id="lastName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="documentType">Tipo de Documento:</label>
+                    <select id="documentType" required>
+                        <option value="">Seleccione...</option>
+                        <option value="DNI">DNI</option>
+                        <option value="CE">Carnet de Extranjería</option>
+                        <option value="PAS">Pasaporte</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="documentNumber">Número de Documento:</label>
+                    <input type="text" id="documentNumber" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthDate">Fecha de Nacimiento:</label>
+                    <input type="date" id="birthDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender">Género:</label>
+                    <select id="gender" required>
+                        <option value="">Seleccione...</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="grade">Grado:</label>
+                    <select id="grade" required>
+                        <option value="">Seleccione...</option>
+                        <option value="1">1er Grado</option>
+                        <option value="2">2do Grado</option>
+                        <option value="3">3er Grado</option>
+                        <option value="4">4to Grado</option>
+                        <option value="5">5to Grado</option>
+                        <option value="6">6to Grado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="section">Sección:</label>
+                    <select id="section" required>
+                        <option value="">Seleccione...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Dirección:</label>
+                    <input type="text" id="address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Teléfono:</label>
+                    <input type="tel" id="phone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="allergies">Alergias/Consideraciones Médicas:</label>
+                    <textarea id="allergies" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="parentName">Nombre del Padre/Madre/Tutor:</label>
+                    <input type="text" id="parentName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="parentPhone">Teléfono del Tutor:</label>
+                    <input type="tel" id="parentPhone" required>
+                </div>
+                
+                <button type="submit">Registrar Estudiante</button>
+                <button type="reset" class="btn-danger">Limpiar Formulario</button>
+            </form>
+        </div>
+        
+        <!-- Pestaña de Estudiantes -->
+        <div id="students" class="tab-content">
+            <h2>Lista de Estudiantes</h2>
+            <div class="students-list">
+                <div class="form-group">
+                    <input type="text" id="searchStudent" placeholder="Buscar estudiante...">
+                </div>
+                
+                <table id="studentsTable">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Documento</th>
+                            <th>Grado</th>
+                            <th>Sección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <!-- Los datos se cargarán dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pestaña de Reportes -->
+        <div id="reports" class="tab-content">
+            <h2>Reportes y Estadísticas</h2>
+            <div class="form-group">
+                <label for="reportType">Tipo de Reporte:</label>
+                <select id="reportType">
+                    <option value="byGrade">Por Grado</option>
+                    <option value="byGender">Por Género</option>
+                    <option value="byAge">Por Edad</option>
+                </select>
+            </div>
+            
+            <button onclick="generateReport()">Generar Reporte</button>
+            
+            <div id="reportResult" style="margin-top: 2rem;">
+                <!-- Aquí se mostrarán los resultados del reporte -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Sistema de Registro Escolar &copy; 2023 - Colegio San Miguel</p>
+    </footer>
+    
+    <script>
+        // Base de datos simulada
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        
+        // Función para cambiar entre pestañas
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            const tabs = document.getElementsByClassName("tab");
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            
+            if (tabName === 'students') {
+                loadStudentsTable();
+            }
+        }
+        
+        // Manejar el envío del formulario
+        document.getElementById('studentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const student = {
+                id: Date.now(), // ID único basado en timestamp
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                documentType: document.getElementById('documentType').value,
+                documentNumber: document.getElementById('documentNumber').value,
+                birthDate: document.getElementById('birthDate').value,
+                gender: document.getElementById('gender').value,
+                grade: document.getElementById('grade').value,
+                section: document.getElementById('section').value,
+                address: document.getElementById('address').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                allergies: document.getElementById('allergies').value,
+                parentName: document.getElementById('parentName').value,
+                parentPhone: document.getElementById('parentPhone').value,
+                registrationDate: new Date().toLocaleDateString()
+            };
+            
+            students.push(student);
+            saveStudents();
+            
+            alert('Estudiante registrado con éxito!');
+            this.reset();
+            
+            // Actualizar la tabla de estudiantes si está visible
+            if (document.getElementById('students').classList.contains('active')) {
+                loadStudentsTable();
+            }
+        });
+        
+        // Cargar datos en la tabla de estudiantes
+        function loadStudentsTable() {
+            const tableBody = document.getElementById('studentsTableBody');
+            tableBody.innerHTML = '';
+            
+            if (students.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay estudiantes registrados</td></tr>';
+                return;
+            }
+            
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.firstName}</td>
+                    <td>${student.lastName}</td>
+                    <td>${student.documentType}: ${student.documentNumber}</td>
+                    <td>${student.grado}° Grado</td>
+                    <td>Sección ${student.section}</td>
+                    <td class="actions">
+                        <button onclick="viewStudent(${student.id})">Ver</button>
+                        <button onclick="editStudent(${student.id})">Editar</button>
+                        <button class="btn-danger" onclick="deleteStudent(${student.id})">Eliminar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Función para ver detalles del estudiante
+        function viewStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                alert(`Detalles del Estudiante:
+Nombre completo: ${student.firstName} ${student.lastName}
+Documento: ${student.documentType} - ${student.documentNumber}
+Fecha de Nacimiento: ${student.birthDate}
+Género: ${student.gender === 'M' ? 'Masculino' : student.gender === 'F' ? 'Femenino' : 'Otro'}
+Grado: ${student.grade}° - Sección ${student.section}
+Dirección: ${student.address}
+Teléfono: ${student.phone}
+Correo: ${student.email}
+Alergias: ${student.allergies || 'Ninguna'}
+Padre/Tutor: ${student.parentName}
+Teléfono del Tutor: ${student.parentPhone}
+Fecha de Registro: ${student.registrationDate}`);
+            }
+        }
+        
+        // Función para editar estudiante
+        function editStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                // Llenar el formulario con los datos del estudiante
+                document.getElementById('firstName').value = student.firstName;
+                document.getElementById('lastName').value = student.lastName;
+                document.getElementById('documentType').value = student.documentType;
+                document.getElementById('documentNumber').value = student.documentNumber;
+                document.getElementById('birthDate').value = student.birthDate;
+                document.getElementById('gender').value = student.gender;
+                document.getElementById('grade').value = student.grade;
+                document.getElementById('section').value = student.section;
+                document.getElementById('address').value = student.address;
+                document.getElementById('phone').value = student.phone;
+                document.getElementById('email').value = student.email;
+                document.getElementById('allergies').value = student.allergies;
+                document.getElementById('parentName').value = student.parentName;
+                document.getElementById('parentPhone').value = student.parentPhone;
+                
+                // Eliminar el estudiante de la lista (será reemplazado con los datos editados)
+                students = students.filter(s => s.id !== id);
+                saveStudents();
+                
+                // Cambiar a la pestaña de registro
+                document.querySelector('.tab.active').classList.remove('active');
+                document.querySelector('.tab-content.active').classList.remove('active');
+                
+                document.querySelector('.tab').classList.add('active');
+                document.getElementById('register').classList.add('active');
+                
+                alert('Puede editar los datos del estudiante en el formulario. No olvide guardar los cambios.');
+            }
+        }
+        
+        // Función para eliminar estudiante
+        function deleteStudent(id) {
+            if (confirm('¿Está seguro que desea eliminar este estudiante?')) {
+                students = students.filter(s => s.id !== id);
+                saveStudents();
+                loadStudentsTable();
+                alert('Estudiante eliminado correctamente.');
+            }
+        }
+        
+        // Función para generar reportes
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            let reportHTML = '<h3>Resultados del Reporte</h3>';
+            
+            if (students.length === 0) {
+                reportHTML += '<p>No hay datos para generar el reporte.</p>';
+                document.getElementById('reportResult').innerHTML = reportHTML;
+                return;
+            }
+            
+            if (reportType === 'byGrade') {
+                // Reporte por grado
+                const grades = {};
+                
+                students.forEach(student => {
+                    if (!grades[student.grade]) {
+                        grades[student.grade] = 0;
+                    }
+                    grades[student.grade]++;
+                });
+                
+                reportHTML += '<table><tr><th>Grado</th><th>Cantidad de Estudiantes</th></tr>';
+                
+                for (const grade in grades) {
+                    reportHTML += `<tr><td>${grade}° Grado</td><td>${grades[grade]}</td></tr>`;
+                }
+                
+                reportHTML += '</table>';
+            } else if (reportType === 'byGender') {
+                // Reporte por género
+                const genders = {
+                    'M': 0,
+                    'F': 0,
+                    'O': 0
+                };
+                
+                students.forEach(student => {
+                    genders[student.gender]++;
+                });
+                
+                reportHTML += '<table><tr><th>Género</th><th>Cantidad de Estudiantes</th></tr>';
+                reportHTML += `<tr><td>Masculino</td><td>${genders['M']}</td></tr>`;
+                reportHTML += `<tr><td>Femenino</td><td>${genders['F']}</td></tr>`;
+                reportHTML += `<tr><td>Otro</td><td>${genders['O']}</td></tr>`;
+                reportHTML += '</table>';
+            } else if (reportType === 'byAge') {
+                // Reporte por edad
+                const ageGroups = {
+                    '5-7': 0,
+                    '8-10': 0,
+                    '11-13': 0,
+                    '14+': 0
+                };
+                
+                students.forEach(student => {
+                    if (student.birthDate) {
+                        const birthDate = new Date(student.birthDate);
+                        const ageDiff = Date.now() - birthDate.getTime();
+                        const ageDate = new Date(ageDiff);
+                        const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+                        
+                        if (age >= 5 && age <= 7) ageGroups['5-7']++;
+                        else if (age >= 8 && age <= 10) ageGroups['8-10']++;
+                        else if (age >= 11 && age <= 13) ageGroups['11-13']++;
+                        else if (age >= 14) ageGroups['14+']++;
+                    }
+                });
+                
+                reportHTML += '<table><tr><th>Rango de Edad</th><th>Cantidad de Estudiantes</th></tr>';
+                reportHTML += `<tr><td>5-7 años</td><td>${ageGroups['5-7']}</td></tr>`;
+                reportHTML += `<tr><td>8-10 años</td><td>${ageGroups['8-10']}</td></tr>`;
+                reportHTML += `<tr><td>11-13 años</td><td>${ageGroups['11-13']}</td></tr>`;
+                reportHTML += `<tr><td>14+ años</td><td>${ageGroups['14+']}</td></tr>`;
+                reportHTML += '</table>';
+            }
+            
+            document.getElementById('reportResult').innerHTML = reportHTML;
+        }
+        
+        // Función para guardar estudiantes en localStorage
+        function saveStudents() {
+            localStorage.setItem('students', JSON.stringify(students));
+        }
+        
+        // Función de búsqueda
+        document.getElementById('searchStudent').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#studentsTableBody tr');
+            
+            rows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase() + ' ' + row.cells[2].textContent.toLowerCase();
+                const doc = row.cells[3].textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || doc.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        
+        // Cargar la tabla de estudiantes al cargar la página si estamos en esa pestaña
+        window.onload = function() {
+            if (document.getElementById('students').classList.contains('active')) {
+                loadStudentsTable();
+            }
+        };
+    </script>
+</body>
+</html>
